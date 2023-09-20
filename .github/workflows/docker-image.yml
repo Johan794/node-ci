@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+ 
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker Setup Buildx
+      uses: docker/setup-buildx-action@v3.0.0
+    - name: Build and Push Docker image
+      uses: docker/build-push-action@v5.0.0
+      with:
+          context: .  # Ruta al contexto de construcción (puede ser el directorio actual)
+          file: ./Dockerfile  # Ruta al Dockerfile
+          push: true  # Habilitar el empuje de la imagen
+          tags: ${{ secrets.DOCKER_USERNAME }}/node-ci:latest  # Nombre y etiqueta de la imagen
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    
